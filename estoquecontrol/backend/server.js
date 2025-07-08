@@ -1,14 +1,24 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose =require('mongoose');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/estoque', {
-  // useNewUrlParser e useUnifiedTopology não são mais necessários nas versões recentes
-});
+// --- INÍCIO DA ALTERAÇÃO ---
+// Pega a string de conexão da variável de ambiente que você vai configurar no Render
+const MONGODB_URI = process.env.MONGODB_URI;
+
+// Conecta ao MongoDB Atlas usando a string da variável de ambiente
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('Conectado com sucesso ao MongoDB Atlas!');
+  })
+  .catch((err) => {
+    console.error('Erro de conexão com o MongoDB:', err);
+  });
+// --- FIM DA ALTERAÇÃO ---
 
 const Produto = mongoose.model('Produto', new mongoose.Schema({
   nome: String,
